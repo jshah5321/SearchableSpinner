@@ -13,10 +13,23 @@
         android:padding="@dimen/_12sdp"
         android:textColor="@android:color/black"
         android:textSize="@dimen/_12ssp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ivCheck"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Name" />
+
+    <ImageView
+        android:id="@+id/ivCheck"
+        android:layout_width="@dimen/_18sdp"
+        android:layout_height="@dimen/_18sdp"
+        android:visibility="gone"
+        android:src="@drawable/ic_check_black"
+        android:layout_marginRight="@dimen/_12sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/view"
+        android:layout_marginEnd="@dimen/_12sdp"
+        tools:ignore="ContentDescription" />
 
     <View
         android:id="@+id/view"

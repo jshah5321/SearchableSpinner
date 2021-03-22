@@ -11,25 +11,38 @@ import com.sj7.spinner.R
 
 class SearchableSpinnerView : AppCompatTextView {
 
+    var showSearchBar = true
+    var setCancelable = false
+    var setCanceledOnTouchOutside = false
+    var showTick = false
+
     constructor(context: Context) : super(context) {
         initView()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            this.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                0, 0,
-                R.drawable.ic_drop_down_arrow_black, 0
-            )
-
-        }
     }
 
     constructor(context: Context, @Nullable attrs: AttributeSet) : super(context, attrs) {
-        initView()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            this.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                0, 0,
-                R.drawable.ic_drop_down_arrow_black, 0
-            )
+        //initView()
+        val typedArray = context.obtainStyledAttributes(attrs,R.styleable.SearchableSpinnerView)
+        try{
+            for(i in 0 until typedArray.indexCount){
+                val attr = typedArray.getIndex(i)
+                if(attr == R.styleable.SearchableSpinnerView_showSearchBar){
+                    showSearchBar = typedArray.getBoolean(attr,true)
+                    initView()
+                }else if(attr == R.styleable.SearchableSpinnerView_setCancelable){
+                    setCancelable = typedArray.getBoolean(attr,false)
+                    initView()
+                }else if(attr == R.styleable.SearchableSpinnerView_setCanceledOnTouchOutside){
+                    setCanceledOnTouchOutside = typedArray.getBoolean(attr,false)
+                    initView()
+                }else if(attr == R.styleable.SearchableSpinnerView_showTick){
+                    showTick = typedArray.getBoolean(attr,false)
+                    initView()
+                }
+            }
 
+        }finally {
+            typedArray.recycle()
         }
     }
 
@@ -39,13 +52,6 @@ class SearchableSpinnerView : AppCompatTextView {
         defStyleAttr
     ) {
         initView()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            this.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                0, 0,
-                R.drawable.ic_drop_down_arrow_black, 0
-            )
-
-        }
     }
 
     private fun initView() {
@@ -54,6 +60,12 @@ class SearchableSpinnerView : AppCompatTextView {
             isSingleLine = true
             compoundDrawablePadding = 5
             ellipsize = TextUtils.TruncateAt.END
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            this.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                0, 0,
+                R.drawable.ic_drop_down_arrow_black, 0
+            )
         }
     }
 }

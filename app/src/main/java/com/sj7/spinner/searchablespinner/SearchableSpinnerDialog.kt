@@ -5,21 +5,23 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.SearchView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sj7.spinner.R
-import com.sj7.spinner.common.Constants
-import com.sj7.spinner.common.DialogListener
-import com.sj7.spinner.common.Spinner
-import com.sj7.spinner.common.SpinnerListener
+import com.sj7.spinner.common.*
 import com.sj7.spinner.databinding.DialogSpinnerBinding
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SearchableSpinnerDialog {
@@ -64,7 +66,14 @@ class SearchableSpinnerDialog {
 
         dialogSpinnerBinding.apply {
             tvTitle.text = dialogTitle
-            tvTitle.setTextColor(fetchPrimaryColor())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                tvTitle.setTextColor(Utilities.fetchPrimaryColor(context))
+            }
+
+            if (searchableSpinnerView.showSearchBar)
+                searchView.visibility = View.VISIBLE
+            else
+                searchView.visibility = View.GONE
 
             dialogListener = object : DialogListener {
                 override fun saveChanges() {
@@ -80,7 +89,7 @@ class SearchableSpinnerDialog {
             }
             rvList.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             searchableSpinnerListAdapter =
-                SearchableSpinnerListAdapter(context, list, dialogListener)
+                SearchableSpinnerListAdapter(context, list, searchableSpinnerView.showTick,dialogListener)
             rvList.adapter = searchableSpinnerListAdapter
 
             searchableSpinnerView.setOnClickListener {
@@ -99,11 +108,11 @@ class SearchableSpinnerDialog {
                     Log.d(Constants.TAG, "search..")
 
                     if (!TextUtils.isEmpty(newText)) {
-                        val query: String = newText.toString().toLowerCase().trim()
+                        val query: String = newText.toString().toLowerCase(Locale.getDefault()).trim()
                         val searchList = ArrayList<Spinner>()
 
                         for (i in 0 until list.size) {
-                            if (list[i].name.toLowerCase().contains(query)) {
+                            if (list[i].name.toLowerCase(Locale.getDefault()).contains(query)) {
                                 searchList.add(list[i])
                             }
                         }
@@ -111,7 +120,7 @@ class SearchableSpinnerDialog {
                         dialogSpinnerBinding.rvList.layoutManager =
                             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                         searchableSpinnerListAdapter =
-                            SearchableSpinnerListAdapter(context, searchList, dialogListener, true)
+                            SearchableSpinnerListAdapter(context, searchList, searchableSpinnerView.showTick,dialogListener, true)
                         dialogSpinnerBinding.rvList.adapter = searchableSpinnerListAdapter
                         searchableSpinnerListAdapter.setMainListForSearch(list)
                         //spinnerListAdapter.setSearchList(searchList, list)
@@ -119,7 +128,7 @@ class SearchableSpinnerDialog {
                         dialogSpinnerBinding.rvList.layoutManager =
                             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                         searchableSpinnerListAdapter =
-                            SearchableSpinnerListAdapter(context, list, dialogListener)
+                            SearchableSpinnerListAdapter(context, list, searchableSpinnerView.showTick,dialogListener)
                         dialogSpinnerBinding.rvList.adapter = searchableSpinnerListAdapter
                         //spinnerListAdapter.setMainList(list)
                     }
@@ -127,7 +136,9 @@ class SearchableSpinnerDialog {
                 }
             })
 
-            btnCancel.setTextColor(fetchPrimaryColor())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                btnCancel.setTextColor(Utilities.fetchPrimaryColor(context))
+            }
             btnCancel.setOnClickListener {
                 dialog.dismiss()
             }
@@ -136,6 +147,8 @@ class SearchableSpinnerDialog {
         dialog.apply {
             requestWindowFeature(Window.FEATURE_NO_TITLE)
             setContentView(dialogSpinnerBinding.root)
+            setCanceledOnTouchOutside(searchableSpinnerView.setCanceledOnTouchOutside)
+            setCancelable(searchableSpinnerView.setCancelable)
             window?.apply {
                 setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 setBackgroundDrawableResource(R.drawable.back_dialog_spinner)
@@ -166,7 +179,7 @@ class SearchableSpinnerDialog {
         dialogSpinnerBinding.apply {
             rvList.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             searchableSpinnerListAdapter =
-                SearchableSpinnerListAdapter(context, list, dialogListener)
+                SearchableSpinnerListAdapter(context, list, searchableSpinnerView.showTick,dialogListener)
             rvList.adapter = searchableSpinnerListAdapter
 
             //searchView.clearFocus()
@@ -227,14 +240,5 @@ class SearchableSpinnerDialog {
             }
         }
         setLastSelectedItemIndex(position)
-    }
-
-    private fun fetchPrimaryColor(): Int {
-        val typedValue = TypedValue()
-        val a: TypedArray =
-            context.obtainStyledAttributes(typedValue.data, intArrayOf(android.R.attr.colorPrimary))
-        val color = a.getColor(0, 0)
-        a.recycle()
-        return color
     }
 }

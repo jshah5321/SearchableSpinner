@@ -2,17 +2,20 @@ package com.sj7.spinner.searchablespinner
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.sj7.spinner.common.DialogListener
 import com.sj7.spinner.common.Spinner
+import com.sj7.spinner.common.Utilities
 import com.sj7.spinner.databinding.ItemSpineerListBinding
 
 class SearchableSpinnerListAdapter(
     private var context: Context,
     private var list: ArrayList<Spinner>,
+    private var showTick: Boolean,
     private var listener: DialogListener,
     private var isSearchList: Boolean = false
 ) : RecyclerView.Adapter<SearchableSpinnerListAdapter.ViewHolder>() {
@@ -39,10 +42,23 @@ class SearchableSpinnerListAdapter(
                     else
                         view.visibility = View.VISIBLE
 
-                    if (list[holder.adapterPosition].isSelected) {
-                        itemView.setBackgroundColor(Color.parseColor("#dedede"))
-                    } else {
-                        itemView.setBackgroundColor(Color.WHITE)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ivCheck.setColorFilter(Utilities.fetchPrimaryColor(context))
+                    }
+
+                    if(showTick){
+                        if (list[holder.adapterPosition].isSelected) {
+                            ivCheck.visibility = View.VISIBLE
+                        } else {
+                            ivCheck.visibility = View.GONE
+                        }
+                    }else{
+                        ivCheck.visibility = View.GONE
+                        if (list[holder.adapterPosition].isSelected) {
+                            itemView.setBackgroundColor(Color.parseColor("#dedede"))
+                        } else {
+                            itemView.setBackgroundColor(Color.WHITE)
+                        }
                     }
                 }
                 itemView.setOnClickListener {

@@ -9,16 +9,31 @@
 
     <com.sj7.spinner.searchablespinner.SearchableSpinnerView
         android:id="@+id/spUser"
-        android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:textColor="@color/purple_700"
-        android:padding="@dimen/_10sdp"
-        android:text="jjkhkj"
-        android:drawableTint="@color/purple_700"
-        android:background="@drawable/back_textview_spinner"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/_16sdp"
+        android:background="@drawable/back_textview_spinner"
+        android:drawableTint="@color/purple_700"
+        android:padding="@dimen/_10sdp"
+        tools:text="jjkhkj"
+        app:showTick="true"
+        android:textColor="@color/purple_700"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:setCancelable="true"
+        tools:ignore="UnusedAttribute" />
+
+<!--    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_margin="@dimen/_16sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="Autofill,LabelFor,TextFields" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
